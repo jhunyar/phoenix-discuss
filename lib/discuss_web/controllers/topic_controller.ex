@@ -74,4 +74,17 @@ defmodule DiscussWeb.TopicController do
     |> put_flash(:info, "Topic Deleted")
     |> redirect(to: Routes.topic_path(conn, :index))
   end
+
+  def check_topic_owner(conn, _params) do
+    %{params: %{"id" => topic_id}} = conn
+
+    if Repo.get(Topic, topic_id).user_id == conn.assigns.user.id do
+      conn
+    else
+      conn
+      |> put_flash(:error, "You cannot edit that")
+      |> redirect(to: Routes.topic_path(conn, :index))
+      |> halt()
+    end
+  end
 end
